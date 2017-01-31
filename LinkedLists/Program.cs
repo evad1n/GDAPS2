@@ -19,7 +19,7 @@ namespace LinkedLists
 
             for(int i = 0; i < 5; i++)
             {
-                list.GetData(i);
+                Console.WriteLine(list.GetData(i));
             }
         }
     }

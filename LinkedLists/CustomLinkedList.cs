@@ -18,15 +18,16 @@ namespace LinkedLists
 
         public CustomLinkedList()
         {
-            head = null;
             count = 0;
         }
+
         public void Add(T data)
         {
             CustomLinkedNode<T> newNode = new CustomLinkedNode<T>() { Data = data };
             if (head == null)
             {
                 head = newNode;
+                current = head;
                 count = 1;
             }
             else
@@ -60,6 +61,7 @@ namespace LinkedLists
                         current = current.next;
                     }
                 }
+                return current.Data;
             }
         }
     }
