@@ -14,6 +14,8 @@ namespace LinkedLists
 
         public CustomLinkedNode<T> head { get; set; }
 
+        public CustomLinkedNode<T> tail { get; set; }
+
         public CustomLinkedNode<T> current { get; set; }
 
         public CustomLinkedList()
@@ -27,18 +29,72 @@ namespace LinkedLists
             if (head == null)
             {
                 head = newNode;
-                current = head;
+                current = newNode;
+                tail = newNode;
                 count = 1;
             }
             else
             {
-                while (current.next != null)
-                {
-                    current = current.next;
-                }
-                current.next = newNode;
+                tail.next = newNode;
+                tail = newNode;
                 count++;
             }
+        }
+
+        public T Remove(int index)
+        {
+            var current = head;
+            T removed;
+            if (index < 0 || index >= count)
+            {
+                throw new IndexOutOfRangeException("That index is not in the list");
+            }
+            else if (index == 0)
+            {
+                removed = head.Data;
+                head = head.next;
+            }
+            else if (index == (count - 1))
+            {
+                removed = tail.Data;
+                for (int i = 0; i < count; i++)
+                {
+                    if (i == index - 1)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        current = current.next;
+                    }
+                }
+                tail = current;
+                current.next = null;
+            }
+            else if (count == 1)
+            {
+                removed = head.Data;
+                head = null;
+                tail = null;
+            }
+            else
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    if (i == index - 1)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        current = current.next;
+                    }
+                }
+                removed = current.next.Data;
+                current.next = current.next.next;
+            }
+            count--;
+            return removed;
         }
 
         public T GetData(int index)
@@ -54,7 +110,7 @@ namespace LinkedLists
                 {
                     if(i == index)
                     {
-                        return current.Data;
+                        break;
                     }
                     else
                     {
