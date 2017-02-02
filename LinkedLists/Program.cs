@@ -10,6 +10,7 @@ namespace LinkedLists
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("The original list values: ");
             CustomLinkedList<int> list = new CustomLinkedList<int>();
             list.Add(1);
             list.Add(3);
@@ -18,25 +19,28 @@ namespace LinkedLists
             list.Add(123123);
             list.Add(322);
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < list.count; i++)
             {
                 Console.WriteLine(list.GetData(i));
             }
 
+            Console.WriteLine("\nAttempting to remove an invalid index: ");
             try
             {
-                list.Remove(10);
+                Console.WriteLine(list.Remove(10));
             }
             catch (IndexOutOfRangeException e)
             {
                 Console.WriteLine(e.Message);
-                throw;
             }
-            list.Remove(0);
-            list.Remove(4);
-            list.Remove(2);
 
-            for (int i = 0; i < 2; i++)
+            Console.WriteLine("\nRemoved list values: ");
+            Console.WriteLine(list.Remove(0));
+            Console.WriteLine(list.Remove(list.count-1));
+            Console.WriteLine(list.Remove(2));
+
+            Console.WriteLine("\nThe changed list values: ");
+            for (int i = 0; i < list.count; i++)
             {
                 Console.WriteLine(list.GetData(i));
             }
