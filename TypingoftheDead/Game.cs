@@ -17,7 +17,7 @@ namespace TypingoftheDead
         {
             zombie = new ZombieData();
             score = 0;
-            lives = 0;
+            lives = 3;
         }
 
         public void PlayGame()
@@ -26,6 +26,11 @@ namespace TypingoftheDead
             string currentPhrase;
             int lastAttack = 0;
             int index;
+
+            zombie.LoadPhrases("Assets/phrases");
+            zombie.LoadZombies();
+
+            Console.WriteLine("Welcome to the Typing of the Dead");
 
             while(lives > 0)
             {
@@ -47,7 +52,7 @@ namespace TypingoftheDead
                         index++;
                         if(index == currentPhrase.Length - 1)
                         {
-
+                            Console.WriteLine("Nice job");
                         }
                     } 
                 }
@@ -64,6 +69,7 @@ namespace TypingoftheDead
                 }
 
             }
+            Console.WriteLine("GAME OVER \nFinal Score: " + score);
         }
     }
 }

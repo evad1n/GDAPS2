@@ -15,12 +15,78 @@ namespace TypingoftheDead
 
         public void LoadPhrases(string filename)
         {
-            StreamReader sr = new StreamReader(filename);
+            StreamReader input = null;
+            try
+            {
+                input = new StreamReader(filename);
+                string line;
+                while ((line = input.ReadLine()) != null)
+                {
+                    phrases.Add(line);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error with file: " +e.Message);
+            }
+            finally
+            {
+                if (input != null)
+                {
+                    input.Close();
+                }
+            }
         }
 
         public void LoadZombies()
         {
-
+            StreamReader input = null;
+            string[] files = Directory.GetFiles("Assets");
+            foreach(string file in files)
+            {
+                if(file.StartsWith("asciiZombie"))
+                {
+                    try
+                    {
+                        input = new StreamReader(file);
+                        string line;
+                        while ((line = input.ReadLine()) != null)
+                        {
+                            zombies.Add(line);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Error with file: " + e.Message);
+                    }
+                    finally
+                    {
+                        if (input != null)
+                        {
+                            input.Close();
+                        }
+                    }
+                }
+            }
+            try
+            {
+                string line;
+                while ((line = input.ReadLine()) != null)
+                {
+                    phrases.Add(line);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error with file: " + e.Message);
+            }
+            finally
+            {
+                if (input != null)
+                {
+                    input.Close();
+                }
+            }
         }
 
         public string RandomPhrase()
