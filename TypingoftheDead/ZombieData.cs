@@ -11,89 +11,67 @@ namespace TypingoftheDead
     {
         List<string> zombies;
         List<string> phrases;
-        Random rand;
+        Random rand = new Random();
 
+        //Load list of phrases to be typed
         public void LoadPhrases(string filename)
         {
-            StreamReader input = null;
-            try
+            phrases = new List<string>();
+            StreamReader input = new StreamReader(filename);
+            if (input != null)
             {
-                input = new StreamReader(filename);
                 string line;
                 while ((line = input.ReadLine()) != null)
                 {
                     phrases.Add(line);
                 }
+                input.Close();
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine("Error with file: " +e.Message);
+                throw new FileNotFoundException("The file could not be found", filename);
             }
-            finally
-            {
-                if (input != null)
-                {
-                    input.Close();
-                }
-            }
+
+
         }
 
+        //Load zombie ascii art
         public void LoadZombies()
         {
+            zombies = new List<string>();
             StreamReader input = null;
             string[] files = Directory.GetFiles("Assets");
-            foreach(string file in files)
+            if (files != null)
             {
-                if(file.StartsWith("asciiZombie"))
+                foreach (string file in files)
                 {
-                    try
+                    if (file.Contains("asciiZombie"))
                     {
                         input = new StreamReader(file);
-                        string line;
+                        string full = "";
+                        string line = null;
                         while ((line = input.ReadLine()) != null)
                         {
-                            zombies.Add(line);
+                            full += line + "\n";
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Error with file: " + e.Message);
-                    }
-                    finally
-                    {
-                        if (input != null)
-                        {
-                            input.Close();
-                        }
+                        zombies.Add(full);
+                        input.Close();
                     }
                 }
             }
-            try
+            else
             {
-                string line;
-                while ((line = input.ReadLine()) != null)
-                {
-                    phrases.Add(line);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error with file: " + e.Message);
-            }
-            finally
-            {
-                if (input != null)
-                {
-                    input.Close();
-                }
+                throw new FileNotFoundException("No files in that directory", "Assets");
             }
         }
 
+        //Returns a random phrase from the list of loaded of phrases
         public string RandomPhrase()
         {
             return phrases[rand.Next(phrases.Count)];
         }
 
+        //Returns a random zombie ascii art from the list of loaded zombies
         public string RandomZombie()
         {
             return zombies[rand.Next(zombies.Count)];
