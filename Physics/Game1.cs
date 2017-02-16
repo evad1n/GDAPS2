@@ -1,8 +1,10 @@
-﻿using FarseerPhysics.Dynamics;
+﻿using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace Physics
@@ -17,16 +19,20 @@ namespace Physics
 
         World world;
         Body balloonBody;
+        Fixture balloonFixture;
         List<Vector2> positions;
         List<Body> bodies;
+        List<Fixture> fixtures;
 
         Vector2 hitForce;
+        Random rand;
 
         SpriteFont font;
         Texture2D balloonTexture;
 
         int score;
         string time;
+        float timer;
 
         public Game1()
         {
@@ -45,19 +51,24 @@ namespace Physics
             // TODO: Add your initialization logic here
             positions = new List<Vector2>();
             bodies = new List<Body>();
+            fixtures = new List<Fixture>();
+            rand = new Random();
             world = new World(new Vector2(0,-9.8f));
             score = 0;
             time = "";
-            hitForce = new Vector2(0, 10100101f);
-            world.Step(0.5f);
+            hitForce = new Vector2(0, 10000f);
 
-            balloonBody = BodyFactory.CreateCircle(world, 1, 1);
-            //FixtureFactory.AttachCircle(1,1, balloonBody);
+            this.IsMouseVisible = true;
+
+            balloonBody = new Body(world);
+            balloonFixture = balloonBody.CreateFixture(new CircleShape(1f, 1));
             balloonBody.Position = new Vector2(0,0);
             balloonBody.BodyType = BodyType.Dynamic;
 
             positions.Add(balloonBody.Position);
             bodies.Add(balloonBody);
+            fixtures.Add(balloonFixture);
+
             base.Initialize();
         }
 
@@ -95,12 +106,16 @@ namespace Physics
                 Exit();
 
             // TODO: Add your update logic here
+            world.Step(0.5f);
 
-            time = gameTime.ElapsedGameTime.Minutes + ":" + gameTime.ElapsedGameTime.Seconds;
+            time = gameTime.TotalGameTime.Minutes + "" + string.Format("{0:0.00}",(float)gameTime.TotalGameTime.TotalSeconds/100);
 
-            if (gameTime.ElapsedGameTime.Seconds > 5)
+            timer += gameTime.ElapsedGameTime.Milliseconds;
+
+            if (timer > 5000)
             {
-                positions.Add(CreateBalloon());
+                CreateBalloon();
+                timer = 0;
             }
 
             HandleInput();
@@ -131,13 +146,17 @@ namespace Physics
             base.Draw(gameTime);
         }
 
-        public Vector2 CreateBalloon()
+        public void CreateBalloon()
         {
             balloonBody = new Body(world);
-            FixtureFactory.AttachCircle(1, 1, balloonBody);
-            balloonBody.Position = new Vector2(0, 0);
+            balloonFixture = balloonBody.CreateFixture(new CircleShape(1f, 1));
+            balloonBody.Position = new Vector2(rand.Next(0,500), rand.Next(0, 500));
+            balloonBody.BodyType = BodyType.Dynamic;
 
-            return balloonBody.Position;
+            positions.Add(balloonBody.Position);
+            bodies.Add(balloonBody);
+            fixtures.Add(balloonFixture);
+
         }
 
         public void HandleInput()
