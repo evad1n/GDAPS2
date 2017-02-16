@@ -40,7 +40,7 @@ namespace TypingoftheDead
         {
             zombies = new List<string>();
             StreamReader input = null;
-            string[] files = Directory.GetFiles("Assets");
+            string[] files = Directory.GetFiles("../Debug");
             if (files != null)
             {
                 foreach (string file in files)
@@ -61,7 +61,7 @@ namespace TypingoftheDead
             }
             else
             {
-                throw new FileNotFoundException("No files in that directory", "Assets");
+                throw new FileNotFoundException("No files in that directory", "Debug");
             }
         }
 

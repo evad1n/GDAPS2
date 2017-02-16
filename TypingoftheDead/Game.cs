@@ -17,7 +17,7 @@ namespace TypingoftheDead
         {
             //Load zombie art and phrases to type
             zombie = new ZombieData();
-            zombie.LoadPhrases("Assets/phrases.txt");
+            zombie.LoadPhrases("phrases.txt");
             zombie.LoadZombies();
         }
 
