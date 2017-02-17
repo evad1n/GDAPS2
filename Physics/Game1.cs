@@ -1,11 +1,13 @@
 ﻿using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Physics
 {
@@ -17,11 +19,14 @@ namespace Physics
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        const float unitToPixel = 100.0f;
+        const float pixelToUnit = 1 / unitToPixel;
+
+        static MouseState prevM;
+
         World world;
         Body balloonBody;
         Fixture balloonFixture;
-        List<Vector2> positions;
-        List<Body> bodies;
         List<Fixture> fixtures;
 
         Vector2 hitForce;
@@ -49,24 +54,20 @@ namespace Physics
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            positions = new List<Vector2>();
-            bodies = new List<Body>();
             fixtures = new List<Fixture>();
             rand = new Random();
-            world = new World(new Vector2(0,-9.8f));
+            world = new World(new Vector2(0,9.8f));
             score = 0;
             time = "";
-            hitForce = new Vector2(0, 10000f);
+            hitForce = new Vector2(0, -100000000f);
 
             this.IsMouseVisible = true;
 
-            balloonBody = new Body(world);
+            balloonBody = BodyFactory.CreateRectangle(world, 5f * pixelToUnit, 5f * pixelToUnit, 0.001f);
             balloonFixture = balloonBody.CreateFixture(new CircleShape(1f, 1));
-            balloonBody.Position = new Vector2(0,0);
+            balloonFixture.Body.Position = new Vector2((GraphicsDevice.Viewport.Width / 2.0f) * pixelToUnit,0);
             balloonBody.BodyType = BodyType.Dynamic;
 
-            positions.Add(balloonBody.Position);
-            bodies.Add(balloonBody);
             fixtures.Add(balloonFixture);
 
             base.Initialize();
@@ -82,7 +83,7 @@ namespace Physics
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            balloonTexture = Content.Load<Texture2D>("balloon");
+            balloonTexture = Content.Load<Texture2D>("balloon2");
             font = Content.Load<SpriteFont>("font");
         }
 
@@ -106,16 +107,25 @@ namespace Physics
                 Exit();
 
             // TODO: Add your update logic here
-            world.Step(0.5f);
+            world.Step(0.067f);
 
-            time = gameTime.TotalGameTime.Minutes + "" + string.Format("{0:0.00}",(float)gameTime.TotalGameTime.TotalSeconds/100);
+            time = string.Format("{0:0.00}",(float)gameTime.TotalGameTime.TotalSeconds);
 
-            timer += gameTime.ElapsedGameTime.Milliseconds;
+            timer += (float)gameTime.ElapsedGameTime.Milliseconds;
 
             if (timer > 5000)
             {
                 CreateBalloon();
                 timer = 0;
+            }
+
+            for(int i = 0; i < fixtures.Count; i++)
+            {
+                if(fixtures[i].Body.Position.Y > GraphicsDevice.Viewport.Height)
+                {
+                    fixtures[i].Dispose();
+                    fixtures.RemoveAt(i);
+                }
             }
 
             HandleInput();
@@ -134,9 +144,9 @@ namespace Physics
             // TODO: Add your drawing code here
             spriteBatch.Begin();
 
-            for(int i = 0; i < positions.Count; i++)
+            for (int i = 0; i < fixtures.Count; i++)
             {
-                spriteBatch.Draw(balloonTexture, position: positions[i], scale: new Vector2(0.8f));
+                spriteBatch.Draw(balloonTexture, fixtures[i].Body.Position, scale: new Vector2(0.5f));
             }
 
             spriteBatch.DrawString(font, "Score: " + score + "  Time: " + time, new Vector2(600, 0), Color.White);
@@ -148,33 +158,34 @@ namespace Physics
 
         public void CreateBalloon()
         {
-            balloonBody = new Body(world);
-            balloonFixture = balloonBody.CreateFixture(new CircleShape(1f, 1));
-            balloonBody.Position = new Vector2(rand.Next(0,500), rand.Next(0, 500));
+            balloonBody = BodyFactory.CreateRectangle(world, 5f * pixelToUnit, 5f * pixelToUnit, 1);
+            balloonFixture = balloonBody.CreateFixture(new CircleShape(1f, 0.001f));
+            balloonFixture.Body.Position = new Vector2(rand.Next(50, GraphicsDevice.Viewport.Width - 50), rand.Next(0, 100));
             balloonBody.BodyType = BodyType.Dynamic;
 
-            positions.Add(balloonBody.Position);
-            bodies.Add(balloonBody);
             fixtures.Add(balloonFixture);
 
         }
 
         public void HandleInput()
         {
-            if(Mouse.GetState().LeftButton == ButtonState.Pressed)
+            var m = Mouse.GetState();
+
+            if (m.LeftButton == ButtonState.Pressed && prevM.LeftButton == ButtonState.Released)
             {
-                for(int i = 0; i < positions.Count; i++)
+                for (int i = 0; i < fixtures.Count; i++)
                 {
-                    if (Mouse.GetState().Position.X > positions[i].X - 5 && Mouse.GetState().Position.X < positions[i].X + 5)
+                    if (m.Position.X > fixtures[i].Body.Position.X && m.Position.X < fixtures[i].Body.Position.X + 100)
                     {
-                        if (Mouse.GetState().Position.Y > positions[i].Y - 5 && Mouse.GetState().Position.Y < positions[i].Y + 5)
+                        if (m.Position.Y > fixtures[i].Body.Position.Y  - 50 && m.Position.Y < fixtures[i].Body.Position.Y + 150)
                         {
                             score += 100;
-                            bodies[i].ApplyForce(hitForce);
+                            fixtures[i].Body.ApplyForce(hitForce);
                         }
                     }
                 }
             }
+            prevM = m;
         }
     }
 }
