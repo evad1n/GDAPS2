@@ -12,10 +12,10 @@ namespace Threads
         static void Main(string[] args)
         {
             //Part 1
-            //for(int i = 0; i < 10; i++)
+            //for (int i = 0; i < 50; i++)
             //{
             //    NumberPrinter num = new NumberPrinter(i);
-            //    for(int j = 0; j < 5; j++)
+            //    for (int j = 0; j < 50; j++)
             //    {
             //        Thread t = new Thread(num.Print);
             //        t.Start();
@@ -44,6 +44,10 @@ namespace Threads
             foreach (Thread t in list)
             {
                 t.Start();
+            }
+            foreach (Thread t in list)
+            {
+                t.Join();
             }
             Console.WriteLine("Update Complete! Time to Draw");
         }
