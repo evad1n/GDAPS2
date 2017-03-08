@@ -13,6 +13,7 @@ namespace DoubleLinkedLists
 
         public T Data { get; set; }
 
+        //Set previous and next to null on creation 
         public CustomNode(T data)
         {
             this.Data = data;
