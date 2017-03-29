@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CustomStack
+namespace CustomQueue
 {
-    class GameStack : IStack
+    class GameQueue : IQueue
     {
         string[] list;
 
@@ -14,6 +14,7 @@ namespace CustomStack
         public int Count
         {
             get { return count; }
+            set { count = value; }
         }
 
         public bool IsEmpty
@@ -21,29 +22,30 @@ namespace CustomStack
             get { return count == 0; }
         }
 
-        public GameStack(int size)
+        public GameQueue(int size)
         {
             list = new string[size];
         }
 
-        public void Push(string s)
+        public void Enqueue(string str)
         {
             if(count == list.Length)
             {
-                throw new IndexOutOfRangeException("The stack is full");
+                throw new IndexOutOfRangeException("The queue is full");
             }
             else
             {
-                list[count] = s;
+                list[count] = str;
                 count++;
             }
         }
 
-        public string Pop()
+        public string Dequeue()
         {
             if(count > 0)
             {
-                string temp = list[count - 1];
+                string temp = list[0];
+                list = list.Where(s => (s != list[0])).ToArray();
                 count--;
                 return temp;
             }
@@ -51,11 +53,12 @@ namespace CustomStack
             {
                 return null;
             }
+
         }
 
         public string Peek()
         {
-            return list[count - 1];
+            return list[0];
         }
     }
 }
