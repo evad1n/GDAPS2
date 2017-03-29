@@ -45,7 +45,7 @@ namespace CustomQueue
             if(count > 0)
             {
                 string temp = list[0];
-                list = list.Where(s => (s != list[0])).ToArray();
+                list = list.Skip(1).ToArray();
                 count--;
                 return temp;
             }

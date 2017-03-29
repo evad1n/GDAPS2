@@ -24,7 +24,7 @@ namespace CustomQueue
             queue.Enqueue("Chad");
             queue.Enqueue("Liam");
             
-            for(int i = 0; i <queue.; i++)
+            for(int i = 0; i <queue.Count;)
             {
                 Console.WriteLine("Player " + queue.Dequeue() + " has joined the server: " + queue.Count + " player(s) left in the queue");
             }
