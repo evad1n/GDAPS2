@@ -10,6 +10,26 @@ namespace PriorityQueue
     {
         static void Main(string[] args)
         {
+            Random rand = new Random();
+            PriorityQueue priorityQueue = new PriorityQueue();
+
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+            priorityQueue.Enqueue(rand.Next(50));
+
+            while(!priorityQueue.IsEmpty)
+            {
+                Console.WriteLine(priorityQueue.Dequeue());
+            }
         }
     }
 }
