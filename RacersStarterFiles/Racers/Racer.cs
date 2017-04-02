@@ -66,7 +66,19 @@ namespace Racers {
         /// <param name="distanceToTravel">how far to move in track until reaching next Racer or finish</param>
         public Racer(RaceTrack rt, int tracknumber, int xPos, int distanceToTravel) {
 
-              // to complete!
+            raceTrack = rt;
+            track = tracknumber;
+            this.xPos = xPos;
+            distance = distanceToTravel;
+
+            //Generate random speeds for the racers by using a timebuffer bewteen random object instantiation
+            Thread.Sleep(TIMEBUFFER);
+            rgen = new Random();
+            sleep = rgen.Next(MINSLEEP, MAXSLEEP);
+            speed = rgen.Next(MINSPEED, MAXSPEED);
+
+            //Calculate the endpoint for this racer
+            endPoint = xPos + distance;
             
  
         } // constructor Racer
@@ -79,9 +91,19 @@ namespace Racers {
         /// Temporary move method (need to fix):
         /// </summary>
         public void move() {
-            while (true) {
-                Thread.Sleep(250);
-                xPos += 10;
+            //Make sure the previous runner has finished unless there is no previous runner
+            if(prev != null)
+                prev.Join();
+
+            while (xPos < endPoint) {
+                Thread.Sleep(sleep);
+                xPos += speed;
+            }
+
+            //If its the last runner win the race for the team on this track
+            if(lastRunner)
+            {
+                raceTrack.raceComplete(track);
             }
         }
 
