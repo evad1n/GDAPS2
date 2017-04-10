@@ -68,15 +68,15 @@ namespace Racers {
                     Racer racer = addRacer(t, r);
 
                     //if racer isn't first, racer needs to know who will be handing off ("previous"):
-                    //if (r > 0)
-                    //   racer.follow(??????);
+                    if (r > 0)
+                       racer.follow(raceThreads[t, r-1]);
 
-                    // create thread for racer who'll move:
+                    //create thread for racer who'll move:
                     raceThreads[t, r] = new Thread(racer.move);
-                    
-                    // indicate last racer in team to know who declares victory:
-                    // if (r == ?????)
-                    //   racer.????? = ?????
+
+                    //indicate last racer in team to know who declares victory:
+                    if (r == RACERS - 1)
+                        racer.LastRunner = true;
                     
                 } // end racers
 
