@@ -10,6 +10,8 @@ namespace Graphs
     {
         static void Main(string[] args)
         {
+            //GRAPHS ICE
+            /*
             AdjacencyList list = new AdjacencyList();
 
             string input = "";
@@ -38,6 +40,10 @@ namespace Graphs
             }
 
             Console.WriteLine("Wow, great job, you did it...");
+            */
+
+            Graph graph = new Graph();
+            graph.DepthFirst("library");
         }
     }
 }

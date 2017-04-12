@@ -8,7 +8,7 @@ namespace Graphs
 {
     class AdjacencyList
     {
-        Dictionary<string, List<string>> dict;
+        public Dictionary<string, List<string>> dict;
 
         public AdjacencyList()
         {
