@@ -28,13 +28,11 @@ namespace Graphs
             v = new Vertex("hallway", 1);
             dict.Add(v.name, v);
             list.Add(v);
-            list.Add(v);
             adjacency[0, v.number] = 1;
             adjacency[4, v.number] = 1;
 
             v = new Vertex("bathroom", 2);
             dict.Add(v.name, v);
-            list.Add(v);
             list.Add(v);
             adjacency[3, v.number] = 1;
             adjacency[4, v.number] = 1;
@@ -53,6 +51,16 @@ namespace Graphs
             adjacency[2, v.number] = 1;
             adjacency[3, v.number] = 1;
 
+
+
+            /*
+             * H - Be
+             *         Ba
+             * L - K
+             * 
+             * 
+             */
+
         }
 
         public void Reset()
@@ -60,6 +68,7 @@ namespace Graphs
             foreach(Vertex v in list)
             {
                 v.visited = false;
+                v.distance = int.MaxValue;
             }
         }
 
@@ -68,7 +77,7 @@ namespace Graphs
             int r = list.IndexOf(dict[name]);
             for (int i = 0; i < adjacency.GetLength(1); i++)
             {
-                if(adjacency[r,i] == 1)
+                if(adjacency[i,r] == 1)
                 {
                     if(list[i].visited == false)
                     {
@@ -111,6 +120,50 @@ namespace Graphs
                     stack.Pop();
                 }
             }
+        }
+
+        public void ShortestPath(string name)
+        {
+            Reset();
+
+            Vertex current = dict[name];
+
+            Vertex v = dict[name];
+            v.visited = true;
+
+            while (list.Where(s => s.visited = false).ToList().Count != 0)
+            {
+                v = GetAdjacentUnvisited(current.name);
+                if (v != null)
+                {
+                    int dist = current.distance + adjacency[list.IndexOf(current), list.IndexOf(v)];
+                    if (dist < v.distance)
+                    {
+                        v.distance = dist;
+                    }
+                }
+                else
+                {
+                    Vertex min = v;
+                    foreach(Vertex vert in list.Where(s => s.visited = false).ToList())
+                    {
+                        if(vert.distance < min.distance)
+                        {
+                            min = vert;
+                        }
+                    }
+
+                    current = min;
+                }
+            }
+        }
+
+        public void Path(string source, string destination)
+        {
+            Console.WriteLine("The shortest path is: ");
+
+            Vertex start = dict[source];
+            Vertex end = dict[destination];
         }
     }
 }

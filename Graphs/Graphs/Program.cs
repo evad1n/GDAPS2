@@ -42,8 +42,21 @@ namespace Graphs
             Console.WriteLine("Wow, great job, you did it...");
             */
 
+            //Depth First
             Graph graph = new Graph();
             graph.DepthFirst("library");
+
+            //Dijkstra
+            graph.ShortestPath("library");
+
+            string input = "";
+
+            while(input != "exit")
+            {
+                input = Console.ReadLine();
+
+                graph.Path("library", input);
+            }
         }
     }
 }

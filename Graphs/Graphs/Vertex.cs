@@ -11,6 +11,8 @@ namespace Graphs
         public string name;
         public bool visited;
         public int number;
+        public int distance = int.MaxValue;
+        public Vertex neighbor;
 
         public Vertex(string name, int number)
         {
