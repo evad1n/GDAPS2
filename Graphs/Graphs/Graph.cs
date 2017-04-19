@@ -17,7 +17,7 @@ namespace Graphs
         {
             dict = new Dictionary<string, Vertex>();
             list = new List<Vertex>();
-            adjacency = new int[5, 5];
+            adjacency = new int[6, 6];
 
             Vertex v = new Vertex("library", 0);
             dict.Add(v.name, v);
@@ -36,6 +36,7 @@ namespace Graphs
             list.Add(v);
             adjacency[3, v.number] = 1;
             adjacency[4, v.number] = 1;
+            adjacency[5, v.number] = 1;
 
             v = new Vertex("kitchen", 3);
             dict.Add(v.name, v);
@@ -50,11 +51,18 @@ namespace Graphs
             adjacency[1, v.number] = 1;
             adjacency[2, v.number] = 1;
             adjacency[3, v.number] = 1;
+            adjacency[5, v.number] = 1;
+
+            v = new Vertex("attic", 5);
+            dict.Add(v.name, v);
+            list.Add(v);
+            adjacency[2, v.number] = 1;
+            adjacency[4, v.number] = 1;
 
 
 
-            /*
-             * H - Be
+            /*        , A
+             * H - Be   |
              *         Ba
              * L - K
              * 
@@ -129,9 +137,11 @@ namespace Graphs
             Vertex current = dict[name];
 
             Vertex v = dict[name];
+            v.distance = 0;
+            v.permanent = true;
             v.visited = true;
 
-            while (list.Where(s => s.visited = false).ToList().Count != 0)
+            while (list.Where(s => s.permanent == false).ToList().Count != 0)
             {
                 v = GetAdjacentUnvisited(current.name);
                 if (v != null)
@@ -140,30 +150,46 @@ namespace Graphs
                     if (dist < v.distance)
                     {
                         v.distance = dist;
+                        v.visited = true;
+                        v.neighbor = current;
                     }
                 }
                 else
                 {
-                    Vertex min = v;
-                    foreach(Vertex vert in list.Where(s => s.visited = false).ToList())
+                    int min = int.MaxValue;
+                    foreach(Vertex vert in list.Where(s => s.permanent == false).ToList())
                     {
-                        if(vert.distance < min.distance)
+                        if(vert.distance < min)
                         {
-                            min = vert;
+                            min = vert.distance;
+                            current = vert;
                         }
                     }
-
-                    current = min;
+                    current.permanent = true;
                 }
             }
         }
 
         public void Path(string source, string destination)
         {
+            if(!dict.ContainsKey(destination))
+            {
+                Console.WriteLine("That is not a valid room");
+                return;
+            }
             Console.WriteLine("The shortest path is: ");
 
             Vertex start = dict[source];
             Vertex end = dict[destination];
+            Vertex current = end;
+
+            while(current != start)
+            {
+                Console.WriteLine(current.name);
+                current = current.neighbor;
+            }
+
+            Console.WriteLine(start.name + "\n");
         }
     }
 }

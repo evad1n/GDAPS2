@@ -10,6 +10,8 @@ namespace Graphs
     {
         static void Main(string[] args)
         {
+            Graph graph = new Graph();
+
             //GRAPHS ICE
             /*
             AdjacencyList list = new AdjacencyList();
@@ -43,16 +45,18 @@ namespace Graphs
             */
 
             //Depth First
-            Graph graph = new Graph();
-            graph.DepthFirst("library");
+            //graph.DepthFirst("library");
 
             //Dijkstra
             graph.ShortestPath("library");
 
             string input = "";
 
+            Console.WriteLine("You always start in the library.");
+
             while(input != "exit")
             {
+                Console.WriteLine("Which room are you trying to get to? ");
                 input = Console.ReadLine();
 
                 graph.Path("library", input);

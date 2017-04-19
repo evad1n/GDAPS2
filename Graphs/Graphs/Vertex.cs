@@ -10,8 +10,9 @@ namespace Graphs
     {
         public string name;
         public bool visited;
+        public bool permanent;
         public int number;
-        public int distance = int.MaxValue;
+        public int distance;
         public Vertex neighbor;
 
         public Vertex(string name, int number)
@@ -19,6 +20,8 @@ namespace Graphs
             this.name = name;
             this.number = number;
             visited = false;
+            permanent = false;
+            distance = int.MaxValue;
         }
     }
 }
