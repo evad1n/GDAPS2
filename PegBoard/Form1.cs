@@ -23,11 +23,13 @@ namespace PegBoard
             for (int i = 0; i < 15; i++)
             {
                 b = new Board(i);
-                display.Text += b.Jump(5, 12);
-                display.Text += b.Jump(12, 5);
-                //Update GUI text
-                Update();
+                display.Text += b.Solve() + "\r\n\r\n\r\n";
             }
+        }
+
+        private void display_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
