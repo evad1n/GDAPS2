@@ -21,16 +21,16 @@ namespace PegBoard
     /// </summary>
     class Board
     {
-        List<Peg> pegs;
+        public static List<Peg> pegs;
         int startPeg;
-        StringBuilder sb;
         int count;
+
+        List<Move> moves;
 
         public Board(int emptyPeg)
         {
             this.startPeg = emptyPeg;
             pegs = new List<Peg>();
-            sb = new StringBuilder();
             count = 14;
 
             //Set up board
@@ -45,33 +45,95 @@ namespace PegBoard
 
         public string Solve()
         {
+            moves = new List<Move>();
             string s = "Starting Empty Peg: " + startPeg + "\r\n";
-            while (count > 1)
+            Go();
+            s += "Number of moves: " + (14 - count) + "\r\n";
+            foreach(Move m in moves)
             {
-                s += (Move(startPeg));
+                s += m.ToString();
             }
             return s;
         }
-
-        public string Move(int emptyPeg)
+        /// <summary>
+        /// Recursive/Backtracking solving function
+        /// </summary>
+        /// <returns></returns>
+        public bool Go()
         {
-            int start = 0;
-            int end = emptyPeg;
-            List<int> moves = pegs[emptyPeg].GetAdjacents();
-            foreach (int m in moves)
+            Update();
+
+            if (count == 1)
             {
-                if (!pegs[m].Empty && !pegs[Jump(m, emptyPeg)].Empty)
-                {
-                    
-                }
+                return true;
             }
-            count--;
-            start = m;
-            pegs[m].Empty = true;
-            pegs[Jump(m, emptyPeg)].Empty = true;
-            pegs[end].Empty = false;
-            return "From: " + start + " To: " + end + "\r\n" + Move(m) + Move(Jump(m, emptyPeg));
-            return null;
+            else
+            {
+                foreach (Peg p in GetEmptyPegs())
+                {
+                    foreach (Move m in p.PossibleMoves())
+                    {
+                        moves.Add(m);
+                        Update();
+                        if (Go())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            moves.RemoveAt(moves.Count - 1);
+                            Update();
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get all empty pegs on the board
+        /// </summary>
+        /// <returns></returns>
+        public List<Peg> GetEmptyPegs()
+        {
+            List<Peg> empties = new List<Peg>();
+            foreach(Peg p in pegs)
+            {
+                if (p.Empty)
+                    empties.Add(p);
+            }
+
+            return empties;
+        }
+
+        /// <summary>
+        /// Updates board based on moves in stack
+        /// </summary>
+        public void Update()
+        {
+            Reset();
+            count = 14;
+            foreach(Move m in moves)
+            {
+                count--;
+                pegs[m.Start].Empty = true;
+                pegs[m.Middle].Empty = true;
+                pegs[m.End].Empty = false;
+            }
+        }
+
+        /// <summary>
+        /// Resets board
+        /// </summary>
+        public void Reset()
+        {
+            for (int i = 0; i < 15; i++)
+            {
+                if (i != startPeg)
+                    pegs[i] = new Peg(i, false);
+                else
+                    pegs[i] = new Peg(i, true);
+            }
         }
     }
 }

@@ -14,19 +14,15 @@ namespace PegBoard
         public int Start { get; set; }
         public int End { get; set; }
         public int Middle { get; set; }
-        /// <summary>
-        /// The number of this move (e.g. The fifth move is 5)
-        /// </summary>
-        public int Count { get; set; }
 
-        public Move(int start, int end, int count)
+        public Move(int start, int end)
         {
             Start = start;
             End = end;
-            Count = count;
             Middle = GetMiddle(start, end);
         }
 
+        //Get the middle peg when a move is performed
         public int GetMiddle(int start, int end)
         {
             int m = Math.Abs(end - start);
@@ -39,6 +35,11 @@ namespace PegBoard
             {
                 return m + start;
             }
+        }
+
+        public override string ToString()
+        {
+            return "From: " + Start + " To: " + End + "\r\n";
         }
     }
 }
